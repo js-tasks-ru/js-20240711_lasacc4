@@ -9,7 +9,7 @@ export function sortStrings(arr, param = 'asc') {
 
   return [...arr].sort((a, b) => {
     return param === 'asc'
-      ? a.localeCompare(b, undefined, options)
-      : b.localeCompare(a, undefined, options);
+      ? a.localeCompare(b, 'ru', options)
+      : b.localeCompare(a, 'ru', options);
   });
 }
