@@ -15,7 +15,7 @@ export default class ColumnChart {
     this._formatHeading = formatHeading;
     this._data = this.getHeightNormalizedElements(data);
 
-    this.createNodes();
+    this._element = this.createNodes();
   }
 
   get element() {
@@ -23,30 +23,36 @@ export default class ColumnChart {
   }
 
   createNodes() {
-    this._element = document.createElement('div');
-    this._element.classList.add('column-chart');
+    const element = document.createElement('div');
+    element.classList.add('column-chart');
 
     if (!this._data || !this._data.length) {
-      this._element.classList.add('column-chart_loading');
+      element.classList.add('column-chart_loading');
     }
 
-    this.appendChildrenNodes();
+    element.appendChild(this.createTitle());
+    element.appendChild(this.createContainer());
+
+    return element;
   }
 
-  appendChildrenNodes() {
+  createTitle() {
     const title = new ChartTitle({
       label: this._label,
       link: this._link,
     });
 
+    return title.element;
+  }
+
+  createContainer() {
     this._chartContainerObject = new ChartContainer({
       data: this._data,
       value: this._value,
       formatHeading: this._formatHeading
     });
 
-    this._element.append(title.element);
-    this._element.append(this._chartContainerObject.element);
+    return this._chartContainerObject.element;
   }
 
   update(newData) {
@@ -98,7 +104,7 @@ class ChartTitle {
     this._label = label;
     this._link = link;
 
-    this.createNodes();
+    this._element = this.createNodes();
   }
 
   get element() {
@@ -106,22 +112,24 @@ class ChartTitle {
   }
 
   createNodes() {
-    this._element = document.createElement('div');
-    this._element.className = 'column-chart__title';
-    this._element.textContent = `Total ${this._label}`;
+    const element = document.createElement('div');
+    element.className = 'column-chart__title';
+    element.textContent = `Total ${this._label}`;
 
-    this.appendExtraNodes();
+    if (this._link) {
+      element.appendChild(this.createLink());
+    }
+
+    return element;
   }
 
-  appendExtraNodes() {
-    if (this._link) {
-      const salesLink = document.createElement('a');
-      salesLink.classList.add('column-chart__link');
-      salesLink.textContent = 'View all';
-      salesLink.href = this._link;
+  createLink() {
+    const salesLink = document.createElement('a');
+    salesLink.classList.add('column-chart__link');
+    salesLink.textContent = 'View all';
+    salesLink.href = this._link;
 
-      this._element.appendChild(salesLink);
-    }
+    return salesLink;
   }
 }
 
@@ -131,7 +139,7 @@ class ChartContainer {
     this._data = data;
     this._formatHeading = formatHeading;
 
-    this.createNodes();
+    this._element = this.createNodes();
   }
 
   get element() {
@@ -139,29 +147,32 @@ class ChartContainer {
   }
 
   createNodes() {
-    this._element = document.createElement('div');
-    this._element.classList.add('column-chart__container');
+    const element = document.createElement('div');
+    element.classList.add('column-chart__container');
 
-    this.appendHeader();
-    this.appendChartBody();
+    element.appendChild(this.createHeader());
+    element.appendChild(this.createChartBody());
+
+    return element;
   }
 
-  appendHeader() {
+  createHeader() {
     const header = document.createElement('div');
     header.classList.add('column-chart__header');
     header.setAttribute("data-element", "header");
     header.textContent = this._formatHeading(this._value);
 
-    this._element.appendChild(header);
+    return header;
   }
 
-  appendChartBody() {
+  createChartBody() {
     const chartBody = document.createElement('div');
     chartBody.classList.add('column-chart__chart');
     chartBody.setAttribute("data-element", "body");
 
     chartBody.append(...this.getContainerItems(this._data));
-    this._element.appendChild(chartBody);
+
+    return chartBody;
   }
 
   updateChartBody(newData) {
