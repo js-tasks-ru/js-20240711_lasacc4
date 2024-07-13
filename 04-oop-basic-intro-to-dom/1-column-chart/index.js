@@ -1,13 +1,19 @@
 export default class ColumnChart {
   constructor(props = {}) {
-    const {data, label, value, link, formatHeading} = props;
+    const {
+      data = [],
+      label = '',
+      value = 0,
+      link = '',
+      formatHeading = (val) => val
+    } = props;
 
     this.chartHeight = +this.getBaseChartHeight();
     this._label = label;
     this._value = value;
     this._link = link;
     this._formatHeading = formatHeading;
-    this._data = data ? this.getHeightNormalizedElements(data) : [];
+    this._data = this.getHeightNormalizedElements(data);
 
     this.createNodes();
   }
@@ -120,7 +126,7 @@ class ChartTitle {
 }
 
 class ChartContainer {
-  constructor({value, data, formatHeading = () => value}) {
+  constructor({value, data, formatHeading}) {
     this._value = value;
     this._data = data;
     this._formatHeading = formatHeading;
