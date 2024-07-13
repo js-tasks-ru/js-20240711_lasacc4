@@ -7,31 +7,34 @@ export default class ColumnChart {
     this._value = value;
     this._link = link;
     this._formatHeading = formatHeading;
+    this._data = data ? this.getHeightNormalizedElements(data) : [];
 
-    this._element = document.createElement('div');
-    this._element.classList.add('column-chart');
-
-    if (!data || !data.length) {
-      this._element.classList.add('column-chart_loading');
-    }
-
-    const normalizedData = this.getHeightNormalizedElements(data);
-
-    this.initElements(normalizedData);
+    this.createNodes();
   }
 
   get element() {
     return this._element;
   }
 
-  initElements(data) {
+  createNodes() {
+    this._element = document.createElement('div');
+    this._element.classList.add('column-chart');
+
+    if (!this._data || !this._data.length) {
+      this._element.classList.add('column-chart_loading');
+    }
+
+    this.appendChildrenNodes();
+  }
+
+  appendChildrenNodes() {
     const title = new ChartTitle({
       label: this._label,
       link: this._link,
     });
 
     this._chartContainerObject = new ChartContainer({
-      data,
+      data: this._data,
       value: this._value,
       formatHeading: this._formatHeading
     });
@@ -89,27 +92,29 @@ class ChartTitle {
     this._label = label;
     this._link = link;
 
-    const title = document.createElement('div');
-    title.className = 'column-chart__title';
-    title.textContent = `Total ${this._label}`;
-
-    this.appendExtraTitleElements(title);
-
-    this._element = title;
+    this.createNodes();
   }
 
   get element() {
     return this._element;
   }
 
-  appendExtraTitleElements(title) {
+  createNodes() {
+    this._element = document.createElement('div');
+    this._element.className = 'column-chart__title';
+    this._element.textContent = `Total ${this._label}`;
+
+    this.appendExtraNodes();
+  }
+
+  appendExtraNodes() {
     if (this._link) {
       const salesLink = document.createElement('a');
       salesLink.classList.add('column-chart__link');
       salesLink.textContent = 'View all';
       salesLink.href = this._link;
 
-      title.appendChild(salesLink);
+      this._element.appendChild(salesLink);
     }
   }
 }
@@ -120,35 +125,37 @@ class ChartContainer {
     this._data = data;
     this._formatHeading = formatHeading;
 
-    const container = document.createElement('div');
-    container.classList.add('column-chart__container');
-
-    this.appendHeader(container);
-    this.appendChartBody(container);
-
-    this._element = container;
+    this.createNodes();
   }
 
   get element() {
     return this._element;
   }
 
-  appendHeader(container) {
+  createNodes() {
+    this._element = document.createElement('div');
+    this._element.classList.add('column-chart__container');
+
+    this.appendHeader();
+    this.appendChartBody();
+  }
+
+  appendHeader() {
     const header = document.createElement('div');
     header.classList.add('column-chart__header');
     header.setAttribute("data-element", "header");
     header.textContent = this._formatHeading(this._value);
 
-    container.appendChild(header);
+    this._element.appendChild(header);
   }
 
-  appendChartBody(container) {
+  appendChartBody() {
     const chartBody = document.createElement('div');
     chartBody.classList.add('column-chart__chart');
     chartBody.setAttribute("data-element", "body");
 
     chartBody.append(...this.getContainerItems(this._data));
-    container.appendChild(chartBody);
+    this._element.appendChild(chartBody);
   }
 
   updateChartBody(newData) {
