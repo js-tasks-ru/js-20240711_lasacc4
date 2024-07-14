@@ -87,6 +87,7 @@ export default class NotificationMessage {
 
   destroy() {
     this.remove();
+    this.removeActiveNotification();
     delete this;
   }
 }
