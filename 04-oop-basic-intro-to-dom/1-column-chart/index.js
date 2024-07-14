@@ -8,7 +8,7 @@ export default class ColumnChart {
       formatHeading = (val) => val
     } = props;
 
-    this.chartHeight = +this.getBaseChartHeight();
+    this.chartHeight = this.getBaseChartHeight();
     this._label = label;
     this._value = value;
     this._link = link;
@@ -89,11 +89,10 @@ export default class ColumnChart {
 
   getBaseChartHeight() {
     const dashboardElement = document.querySelector('.dashboard__charts');
+    const cssHeight = +getComputedStyle(dashboardElement).getPropertyValue('--chart-height');
     const defaultHeight = 50;
 
-    return dashboardElement
-      ? getComputedStyle(dashboardElement).getPropertyValue('--chart-height')
-      : defaultHeight;
+    return (dashboardElement && !isNaN(cssHeight)) ? cssHeight : defaultHeight;
   }
 
   getHeightNormalizedElements(data) {
