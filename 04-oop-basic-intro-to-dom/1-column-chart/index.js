@@ -89,10 +89,11 @@ export default class ColumnChart {
 
   getBaseChartHeight() {
     const dashboardElement = document.querySelector('.dashboard__charts');
-    const cssHeight = +getComputedStyle(dashboardElement).getPropertyValue('--chart-height');
     const defaultHeight = 50;
 
-    return (dashboardElement && !isNaN(cssHeight)) ? cssHeight : defaultHeight;
+    return dashboardElement
+      ? +getComputedStyle(dashboardElement).getPropertyValue('--chart-height')
+      : defaultHeight;
   }
 
   getHeightNormalizedElements(data) {
