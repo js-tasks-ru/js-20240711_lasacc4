@@ -66,7 +66,10 @@ export default class NotificationMessage {
 
     const root = rootElement ?? document.body;
     root.append(this._element);
+    this.setActiveNotification();
+  }
 
+  setActiveNotification() {
     NotificationMessage._activeNotification = this._element;
     NotificationMessage._timeout = setTimeout(() => this.remove(), this._duration);
   }
