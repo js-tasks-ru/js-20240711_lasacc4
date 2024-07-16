@@ -117,21 +117,44 @@ export default class SortableTable {
     const rootElement = document.createElement("div");
     rootElement.setAttribute("data-element", "productsContainer");
     rootElement.classList.add('products-list__container');
-    rootElement.append(this.createTable());
+
+    const table = this.createTable();
+    rootElement.append(table);
+
+    if (this._data.length) {
+      table.classList.remove('sortable-table_loading', 'sortable-table_empty');
+    }
 
     return rootElement;
   }
 
   createTable() {
     const table = document.createElement("div");
-    table.classList.add('sortable-table');
+    table.classList.add('sortable-table', 'sortable-table_loading', 'sortable-table_empty');
 
     table.append(
       this.subElements.header,
       this.subElements.body,
+      ...this.createEmptyDataTemplate()
     );
 
     return table;
+  }
+
+  createEmptyDataTemplate() {
+    const wrapper = document.createElement("div");
+
+    wrapper.innerHTML = (
+      `<div data-element="loading" class="loading-line sortable-table__loading-line"></div>
+         <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
+           <div>
+             <p>No products satisfies your filter criteria</p>
+             <button type="button" class="button-primary-outline">Reset all filters</button>
+           </div>
+        </div>`
+    );
+
+    return wrapper.children;
   }
 
   destroy() {
