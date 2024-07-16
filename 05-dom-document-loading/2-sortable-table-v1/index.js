@@ -1,4 +1,4 @@
-const tableSort = {
+const sortMethods = {
   string: (data, field, order) => {
     const options = {caseFirst: "upper"};
 
@@ -43,7 +43,7 @@ export default class SortableTable {
     }
 
     this._currentSortField = field;
-    this._data = tableSort[sortType](this._data, field, order);
+    this._data = sortMethods[sortType](this._data, field, order);
 
     this.subElements.header.innerHTML = this.createHeaderContent();
     this.subElements.body.innerHTML = this.createBodyContent();
