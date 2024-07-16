@@ -58,12 +58,12 @@ export default class NotificationMessage {
     );
   }
 
-  show(container = document.body) {
+  show(containerElement = document.body) {
     if (NotificationMessage._activeNotification) {
       NotificationMessage._activeNotification.destroy();
     }
 
-    container.append(this._element);
+    containerElement.append(this._element);
     NotificationMessage._activeNotification = this;
     this.timerId = setTimeout(() => this.remove(), this._duration);
   }
