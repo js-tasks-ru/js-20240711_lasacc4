@@ -1,6 +1,5 @@
 export default class NotificationMessage {
   static _activeNotification;
-  static _timeout;
 
   constructor(message = "", props = {}) {
     const {
@@ -59,38 +58,25 @@ export default class NotificationMessage {
     );
   }
 
-  show(rootElement) {
+  show(container = document.body) {
     if (NotificationMessage._activeNotification) {
-      this.removeActiveNotification();
+      NotificationMessage._activeNotification.destroy();
     }
 
-    const root = rootElement ?? document.body;
-    root.append(this._element);
-    this.setActiveNotification();
-  }
-
-  setActiveNotification() {
-    NotificationMessage._activeNotification = this._element;
-    NotificationMessage._timeout = setTimeout(() => this.remove(), this._duration);
+    container.append(this._element);
+    NotificationMessage._activeNotification = this;
+    this.timerId = setTimeout(() => this.remove(), this._duration);
   }
 
   remove() {
     this._element.remove();
-    NotificationMessage._activeNotification = undefined;
-  }
-
-  removeActiveNotification() {
-    if (NotificationMessage._timeout) {
-      clearTimeout(NotificationMessage._timeout);
-    }
-
-    NotificationMessage._activeNotification?.remove();
-    NotificationMessage._activeNotification = undefined;
   }
 
   destroy() {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+    }
+
     this.remove();
-    this.removeActiveNotification();
-    delete this;
   }
 }
