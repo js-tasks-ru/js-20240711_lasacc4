@@ -135,7 +135,6 @@ export default class SortableTable {
 
   destroy() {
     this._element.remove();
-    this.subElements = {};
   }
 }
 
