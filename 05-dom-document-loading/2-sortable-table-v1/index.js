@@ -27,7 +27,7 @@ export default class SortableTable {
     this._data = sortMethods[sortType](this._data, field, order);
 
     this.subElements.header.innerHTML = this.createHeaderCellsTemplate();
-    this.subElements.body.innerHTML = this.createBodyRowListTemplate();
+    this.subElements.body.innerHTML = this.createBodyRowsTemplate();
   }
 
   createContainerElement() {
@@ -65,7 +65,7 @@ export default class SortableTable {
                     ${this.createHeaderCellsTemplate()}
                 </div>
                 <div data-element="body" class="sortable-table__body">
-                    ${this.createBodyRowListTemplate()}
+                    ${this.createBodyRowsTemplate()}
                 </div>
                 ${this.createEmptyDataTemplate()}
             </div>
@@ -101,13 +101,13 @@ export default class SortableTable {
     );
   }
 
-  createBodyRowListTemplate() {
+  createBodyRowsTemplate() {
     return this._data
-      .map((item) => this.createBodyRowTemplate(item, this._headerConfig))
+      .map((item) => this.createRowTemplate(item, this._headerConfig))
       .join('');
   }
 
-  createBodyRowTemplate(item) {
+  createRowTemplate(item) {
     const cells = this._headerConfig.map(({id, template}) => {
       return template ? template(item[id]) : `<div class="sortable-table__cell">${item[id]}</div>`;
     }).join('');

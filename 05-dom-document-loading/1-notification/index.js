@@ -23,10 +23,10 @@ export default class NotificationMessage {
   }
 
   createElement() {
-    const root = document.createElement('div');
-    root.innerHTML = this.createNotificationTemplate();
+    const element = document.createElement('div');
+    element.innerHTML = this.createNotificationTemplate();
 
-    return root.firstElementChild;
+    return element.firstElementChild;
   }
 
   createNotificationTemplate() {
