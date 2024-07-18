@@ -11,7 +11,7 @@ export default class SortableTable {
         order: 'asc',
       },
       isSortLocally = true,
-      customUserSortField = "status"
+      customUserSortField
     } = props;
 
     this._headersConfig = headersConfig;
@@ -31,10 +31,15 @@ export default class SortableTable {
 
   onHeaderPointerDownListener(e) {
     const cellElement = e.target.closest('[data-sortable]');
-    const id = cellElement?.dataset.id;
-    const isSortable = cellElement?.dataset.sortable === "true";
 
-    if (cellElement && isSortable) {
+    if (!cellElement) {
+      return;
+    }
+
+    const id = cellElement.dataset.id;
+    const isSortable = cellElement.dataset.sortable === "true";
+
+    if (isSortable) {
       this.sort(id);
 
       this.subElements.header.innerHTML = this.createHeaderCellsTemplate();
@@ -58,12 +63,12 @@ export default class SortableTable {
       }
     }
 
-    this._data = this.getSortedData(sortType, sortFields);
+    this._data = this.getSortedData(sortFields);
     this._currentSortField = field;
     this._order = this._order === 'asc' ? 'desc' : 'asc';
   }
 
-  getSortedData(sortType, fields) {
+  getSortedData(fields) {
     if (this._isSortLocally) {
       return sortByFields(this._data, fields, this._order);
     }
@@ -177,6 +182,7 @@ export default class SortableTable {
   }
 
   destroy() {
+    this.subElements.header.removeEventListener('pointerdown', this.onHeaderPointerDownListener.bind(this));
     this._element.remove();
   }
 }
