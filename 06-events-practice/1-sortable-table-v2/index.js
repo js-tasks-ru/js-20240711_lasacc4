@@ -22,22 +22,7 @@ export default class SortableTable extends SortableTableV1 {
     this._customUserSortField = customUserSortField;
 
     this.sort(sorted.id);
-    this.subElements.header.addEventListener('pointerdown', this.onHeaderPointerDownListener.bind(this));
-  }
-
-  onHeaderPointerDownListener(e) {
-    const cellElement = e.target.closest('[data-sortable]');
-
-    if (!cellElement) {
-      return;
-    }
-
-    const id = cellElement.dataset.id;
-    const isSortable = cellElement.dataset.sortable === "true";
-
-    if (isSortable) {
-      this.sort(id);
-    }
+    this.createEventListeners();
   }
 
   sort(field, order) {
@@ -79,5 +64,33 @@ export default class SortableTable extends SortableTableV1 {
 
     // placeholder for server sorting
     return this._data;
+  }
+
+  onHeaderClick(e) {
+    const cellElement = e.target.closest('[data-sortable]');
+
+    if (!cellElement) {
+      return;
+    }
+
+    const id = cellElement.dataset.id;
+    const isSortable = cellElement.dataset.sortable === "true";
+
+    if (isSortable) {
+      this.sort(id);
+    }
+  }
+
+  createEventListeners() {
+    this.subElements.header.addEventListener('pointerdown', this.onHeaderClick.bind(this));
+  }
+
+  destroyEventListeners() {
+    this.subElements.header.removeEventListener('pointerdown', this.onHeaderClick.bind(this));
+  }
+
+  destroy() {
+    super.destroy();
+    this.destroyEventListeners();
   }
 }
