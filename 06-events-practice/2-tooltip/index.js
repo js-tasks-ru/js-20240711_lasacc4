@@ -15,11 +15,13 @@ class Tooltip {
 
   addEventListeners() {
     document.body.addEventListener('pointerover', this.onElementPointerOver.bind(this));
+    document.body.addEventListener('pointermove', this.onElementPointerMove.bind(this));
     document.body.addEventListener('pointerout', this.onElementPointerOut.bind(this));
   }
 
   removeEventListeners() {
     document.body.removeEventListener('pointerover', this.onElementPointerOver.bind(this));
+    document.body.removeEventListener('pointermove', this.onElementPointerMove.bind(this));
     document.body.removeEventListener('pointerout', this.onElementPointerOut.bind(this));
   }
 
@@ -35,6 +37,13 @@ class Tooltip {
     this._top = e.clientY;
 
     this.render();
+  }
+
+  onElementPointerMove(e) {
+    if (this.element) {
+      this.element.style.left = `${e.clientX}px`;
+      this.element.style.top = `${e.clientY}px`;
+    }
   }
 
   onElementPointerOut() {
