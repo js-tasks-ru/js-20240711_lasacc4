@@ -2,14 +2,14 @@ class Tooltip {
   static _instance = null;
 
   constructor() {
-    if (!Tooltip._instance) {
-      Tooltip._instance = this;
-      this.onElementPointerOver = this.onElementPointerOver.bind(this);
-      this.onElementPointerMove = this.onElementPointerMove.bind(this);
-      this.onElementPointerOut = this.onElementPointerOut.bind(this);
+    if (Tooltip._instance) {
+      return Tooltip._instance;
     }
 
-    return Tooltip._instance;
+    Tooltip._instance = this;
+    this.onElementPointerOver = this.onElementPointerOver.bind(this);
+    this.onElementPointerMove = this.onElementPointerMove.bind(this);
+    this.onElementPointerOut = this.onElementPointerOut.bind(this);
   }
 
   initialize () {
