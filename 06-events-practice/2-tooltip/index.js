@@ -4,9 +4,12 @@ class Tooltip {
   constructor() {
     if (!Tooltip._instance) {
       Tooltip._instance = this;
-    } else {
-      return Tooltip._instance;
+      this.onElementPointerOver = this.onElementPointerOver.bind(this);
+      this.onElementPointerMove = this.onElementPointerMove.bind(this);
+      this.onElementPointerOut = this.onElementPointerOut.bind(this);
     }
+
+    return Tooltip._instance;
   }
 
   initialize () {
@@ -14,15 +17,15 @@ class Tooltip {
   }
 
   addEventListeners() {
-    document.body.addEventListener('pointerover', this.onElementPointerOver.bind(this));
-    document.body.addEventListener('pointermove', this.onElementPointerMove.bind(this));
-    document.body.addEventListener('pointerout', this.onElementPointerOut.bind(this));
+    document.body.addEventListener('pointerover', this.onElementPointerOver);
+    document.body.addEventListener('pointermove', this.onElementPointerMove);
+    document.body.addEventListener('pointerout', this.onElementPointerOut);
   }
 
   removeEventListeners() {
-    document.body.removeEventListener('pointerover', this.onElementPointerOver.bind(this));
-    document.body.removeEventListener('pointermove', this.onElementPointerMove.bind(this));
-    document.body.removeEventListener('pointerout', this.onElementPointerOut.bind(this));
+    document.body.removeEventListener('pointerover', this.onElementPointerOver);
+    document.body.removeEventListener('pointermove', this.onElementPointerMove);
+    document.body.removeEventListener('pointerout', this.onElementPointerOut);
   }
 
   onElementPointerOver(e) {
