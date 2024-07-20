@@ -1,4 +1,4 @@
-export const borderValueValidator = {
+export const borderValueNormalizer = {
   left: (props) => {
     const {value, min, selected} = props;
     const tempValue = Math.min(value, selected.to);

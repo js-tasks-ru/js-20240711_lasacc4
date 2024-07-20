@@ -1,4 +1,4 @@
-import {borderValueValidator} from "./utils.js";
+import {borderValueNormalizer} from "./utils.js";
 
 export default class DoubleSlider {
   constructor(props = {}) {
@@ -104,7 +104,7 @@ export default class DoubleSlider {
       selected: this.selected
     };
 
-    return borderValueValidator[thumb](params);
+    return borderValueNormalizer[thumb](params);
   }
 
   calculateThumbPosition(thumb, amount) {
