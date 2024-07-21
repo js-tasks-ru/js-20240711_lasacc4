@@ -26,7 +26,7 @@ export default class DoubleSlider {
 
   render() {
     const wrapperElement = document.createElement("div");
-    wrapperElement.innerHTML = this.getTemplate();
+    wrapperElement.innerHTML = this.createTemplate();
 
     this.element = wrapperElement.firstElementChild;
     this.subElements = this.getSubElements(this.element);
@@ -117,19 +117,19 @@ export default class DoubleSlider {
     return (this.max + this.min) * value / (overallPercent > 0 ? overallPercent : 1);
   }
 
-  getTemplate() {
+  createTemplate() {
     return (
       `<div class="range-slider">
-        ${this.getValueTemplate('from', this.selected.from)}
+        ${this.createValueTemplate('from', this.selected.from)}
           <div class="range-slider__inner" data-element="inner">
-            ${this.getInnerContentTemplate()}
+            ${this.createInnerContentTemplate()}
           </div>
-        ${this.getValueTemplate('to', this.selected.to)}
+        ${this.createValueTemplate('to', this.selected.to)}
     </div>`
     );
   }
 
-  getValueTemplate(dataValue, value) {
+  createValueTemplate(dataValue, value) {
     return (
       `<span data-element="${dataValue}">
         ${this.formatValue(value)}
@@ -137,7 +137,7 @@ export default class DoubleSlider {
     );
   }
 
-  getInnerContentTemplate() {
+  createInnerContentTemplate() {
     const left = this.calculateThumbPosition('left', this.selected.from);
     const right = this.calculateThumbPosition('right', this.selected.to);
 
