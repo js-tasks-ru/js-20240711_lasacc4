@@ -30,7 +30,7 @@ describe('async-code-fetch-api-part-1/column-chart', () => {
   it('should load data correctly', async () => {
     const from = new Date();
     const to = new Date();
-    const data = await columnChart.fetchChartData({from, to});
+    const data = await columnChart.update(from, to);
 
     expect(data).toEqual(ordersData);
   });

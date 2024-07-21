@@ -34,6 +34,8 @@ export default class ColumnChart extends ColumnChartV1 {
 
     this.subElements.header.textContent = this._formatHeading(this._value);
     this.subElements.body.innerHTML = this.getBodyItems();
+
+    return data;
   }
 
   async fetchChartData(range) {
