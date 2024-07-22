@@ -37,6 +37,22 @@ export default async function(url, params) {
   }
 }
 
+export const fetchWithHeader = async (url, params = {}, header = 'x-total-count') => {
+  let response;
+  let xTotalCount;
+  let body;
+
+  try {
+    response = await fetch(url.toString(), params);
+    xTotalCount = response.headers.get(header);
+    body = await response.json();
+  } catch (err) {
+    throw new FetchError(response, null, err.message);
+  }
+
+  return [body, xTotalCount];
+};
+
 export class FetchError extends Error {
   name = 'FetchError';
 

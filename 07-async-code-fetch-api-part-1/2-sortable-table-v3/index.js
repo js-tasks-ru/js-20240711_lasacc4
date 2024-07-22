@@ -1,10 +1,12 @@
-import fetchJson from './utils/fetch-json.js';
+import fetchJson, {fetchWithHeader} from './utils/fetch-json.js';
 import SortableTableV2 from '../../06-events-practice/1-sortable-table-v2/index.js';
 import {sortByFields} from "../../06-events-practice/1-sortable-table-v2/utils.js";
 
 const BACKEND_URL = 'https://course-js.javascript.ru';
 
 export default class SortableTable extends SortableTableV2 {
+  _hasMoreData = true;
+
   constructor(headerConfig, props = {}) {
     super(headerConfig, props);
 
@@ -13,7 +15,7 @@ export default class SortableTable extends SortableTableV2 {
       isSortLocally = false,
       range = {
         start: 0,
-        end: 20
+        end: 15
       }
     } = props;
 
@@ -21,7 +23,10 @@ export default class SortableTable extends SortableTableV2 {
     this._range = range;
     this._isSortLocally = isSortLocally;
 
+    this.onInfiniteScroll = this.onInfiniteScroll.bind(this);
+
     this.render();
+    this.addEventListeners();
   }
 
   async render() {
@@ -76,20 +81,67 @@ export default class SortableTable extends SortableTableV2 {
     return data;
   }
 
-  async fetchTableData(params = {}) {
+  async onInfiniteScroll() {
+    if (this.isIntersecting() && this._hasMoreData) {
+      const rangeValue = this.addNewRange();
+
+      const [body, xTotalCount] = await this.fetchTableData({
+        _sort: this._currentSortField,
+        _order: this._currentOrder,
+        _start: this._range.start,
+        _end: this._range.end,
+      }, 'custom');
+
+      this._hasMoreData = xTotalCount >= rangeValue;
+      this._data = [...this._data, ...body];
+
+      this.update(this._currentSortField);
+    }
+  }
+
+  isIntersecting() {
+    const marginValue = 40;
+    const {bottom} = this.element.firstElementChild.getBoundingClientRect();
+    const triggerHeightValue = document.documentElement.clientHeight - marginValue;
+
+    return triggerHeightValue >= bottom;
+  }
+
+  addNewRange() {
+    const rangeValue = this._range.end - this._range.start;
+    this._range.start = this._range.start + rangeValue;
+    this._range.end = this._range.end + rangeValue;
+
+    return rangeValue;
+  }
+
+  async fetchTableData(params = {}, fetchType = 'default') {
     this.setUrlSearchParams(params);
 
     try {
-      return await fetchJson(this.url);
+      return fetchType === 'default' ? await fetchJson(this.url) : await fetchWithHeader(this.url);
     } catch (error) {
       console.error(error);
-      return {};
+      return [];
     }
+  }
+
+  addEventListeners() {
+    document.addEventListener('scroll', this.onInfiniteScroll);
+  }
+
+  removeEventListeners() {
+    document.removeEventListener('scroll', this.onInfiniteScroll);
   }
 
   setUrlSearchParams(params) {
     Object.entries(params).forEach(([key, value]) => {
       this.url.searchParams.set(key, value?.toString());
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.removeEventListeners();
   }
 }
