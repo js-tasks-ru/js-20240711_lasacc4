@@ -26,7 +26,6 @@ export default class SortableTable extends SortableTableV2 {
     this.onInfiniteScroll = this.onInfiniteScroll.bind(this);
 
     this.render();
-    this.addEventListeners();
   }
 
   async render() {
@@ -126,11 +125,13 @@ export default class SortableTable extends SortableTableV2 {
     }
   }
 
-  addEventListeners() {
+  createEventListeners() {
+    super.createEventListeners();
     document.addEventListener('scroll', this.onInfiniteScroll);
   }
 
-  removeEventListeners() {
+  destroyEventListeners() {
+    super.destroyEventListeners();
     document.removeEventListener('scroll', this.onInfiniteScroll);
   }
 
@@ -138,10 +139,5 @@ export default class SortableTable extends SortableTableV2 {
     Object.entries(params).forEach(([key, value]) => {
       this.url.searchParams.set(key, value?.toString());
     });
-  }
-
-  destroy() {
-    super.destroy();
-    this.removeEventListeners();
   }
 }
