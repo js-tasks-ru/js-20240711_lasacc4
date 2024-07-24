@@ -17,27 +17,33 @@ export default class SortableTable extends SortableTableV1 {
 
     super(headerConfig, data);
 
+    this._sorted = sorted;
     this._currentOrder = sorted.order;
     this._isSortLocally = isSortLocally;
     this._customUserSortField = customUserSortField;
 
-    this.sort(sorted.id);
+    if (this._data.length && isSortLocally) {
+      this.sort(sorted.id);
+    }
     this.createEventListeners();
   }
 
   sort(field, order) {
     const {sortType, sortable} = this._headerConfig.find(item => item.id === field);
 
-    if (!this._data.length || !sortable) {
+    if (!sortable) {
       return;
     }
 
     const sortFields = this.getSortFields(field, sortType);
-    const sortOrder = order ?? this._currentOrder;
 
-    this._data = this.getSortedData(sortFields, sortOrder);
+    this._data = this.getSortedData(sortFields, order);
+
+    this.update(field, order);
+  }
+
+  update(field) {
     this._currentSortField = field;
-    this._currentOrder = sortOrder === 'asc' ? 'desc' : 'asc';
 
     this.subElements.header.innerHTML = this.createHeaderCellsTemplate();
     this.subElements.body.innerHTML = this.createBodyRowsTemplate();
@@ -46,7 +52,7 @@ export default class SortableTable extends SortableTableV1 {
   getSortFields(field, sortType) {
     const sortFields = [{value: field, type: sortType}];
 
-    if (this._customUserSortField) {
+    if (this._customUserSortField && this._isSortLocally) {
       const type = typeof this._data[0][this._customUserSortField];
 
       if (this._validSortTypes.includes(type)) {
@@ -75,9 +81,10 @@ export default class SortableTable extends SortableTableV1 {
 
     const id = cellElement.dataset.id;
     const isSortable = cellElement.dataset.sortable === "true";
+    this._currentOrder = cellElement.dataset.order === 'asc' ? 'desc' : 'asc';
 
     if (isSortable) {
-      this.sort(id);
+      this.sort(id, this._currentOrder);
     }
   }
 

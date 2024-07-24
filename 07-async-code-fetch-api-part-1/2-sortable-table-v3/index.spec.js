@@ -146,6 +146,22 @@ describe('async-code-fetch-api-part-1/sortable-table-v3', () => {
     expect(spy.mock.calls[0][1]).toEqual('desc');
   });
 
+  it('"onInfiniteScroll" should append fetched data', async() => {
+    const inIntersectingMock = jest.fn();
+    inIntersectingMock.mockReturnValueOnce(true);
+    sortableTable.isIntersecting = inIntersectingMock;
+
+    fetchMock.mockResponse(JSON.stringify(products));
+    await sortableTable.render();
+
+    const spy = jest.spyOn(sortableTable, 'fetchTableData');
+    await sortableTable.onInfiniteScroll();
+
+    expect(spy).toHaveBeenCalled();
+    expect(spy.mock.calls.length).toEqual(1);
+    expect(sortableTable._data.length).toEqual(6);
+  });
+
   it('should have ability to be destroyed', () => {
     sortableTable.destroy();
 
