@@ -305,7 +305,12 @@ export default class ProductForm {
   createCategoriesTemplate() {
     const subCategories = this.categoriesData.flatMap(({title, subcategories}) => (
       subcategories.map(({id, title: subTitle}) => {
-        return (`<option value=${id}>${title} ${escapeHtml('>')} ${subTitle}</option>`);
+        return (`
+          <option
+              value=${escapeHtml(id)}
+          >
+            ${escapeHtml(title)} ${escapeHtml('>')} ${escapeHtml(subTitle)}
+          </option>`);
       })
     )).join('');
 
@@ -328,17 +333,20 @@ export default class ProductForm {
   }
 
   createImageItemTemplate(source = '', url = '') {
+    const escapedSource = escapeHtml(source);
+    const escapedUrl = escapeHtml(url);
+
     return (
       `<li class="products-edit__imagelist-item sortable-list__item" style="">
-          <input type="hidden" name="url" value=${url}>
-          <input type="hidden" name="source" value=${source}>
+          <input type="hidden" name="url" value=${escapedUrl}>
+          <input type="hidden" name="source" value=${escapedSource}>
           <span>
             <img src="icon-grab.svg" data-grab-handle="" alt="grab">
-            <img class="sortable-table__cell-img" alt="Image" src=${url}>
-            <span>${source}</span>
+            <img class="sortable-table__cell-img" alt="Image" src=${escapedUrl}>
+            <span>${escapedSource}</span>
           </span>
           <button type="button">
-            <img src="icon-trash.svg" data-delete-handle=${source} alt="delete">
+            <img src="icon-trash.svg" data-delete-handle=${escapedSource} alt="delete">
           </button>
       </li>`
     );
