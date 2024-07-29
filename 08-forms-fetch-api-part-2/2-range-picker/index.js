@@ -166,8 +166,8 @@ export default class RangePicker {
 
   createInputContentTemplate() {
     return (`
-        <span data-element="from">${this.from.toLocaleString().split(',')[0]}</span> -
-        <span data-element="to">${this.to.toLocaleString().split(',')[0]}</span>`
+        <span data-element="from">${this.from.toLocaleDateString('ru-RU')}</span> -
+        <span data-element="to">${this.to.toLocaleDateString('ru-RU')}</span>`
     );
   }
 
