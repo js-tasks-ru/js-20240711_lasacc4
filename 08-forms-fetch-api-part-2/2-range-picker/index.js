@@ -134,11 +134,9 @@ export default class RangePicker {
   }
 
   dispatchDateSelectEvent() {
-    const event = new CustomEvent('date-select', {
+    this.element.dispatchEvent(new CustomEvent('date-select', {
       detail: {from: this.from, to: this.to},
-    });
-
-    dispatchEvent(event);
+    }));
   }
 
   createEventListeners() {
