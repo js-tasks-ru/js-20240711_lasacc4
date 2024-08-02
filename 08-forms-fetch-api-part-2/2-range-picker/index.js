@@ -6,8 +6,8 @@ export default class RangePicker {
 
   constructor(props) {
     const {
-      from = new Date(2024, 6, 15),
-      to = new Date(2024, 7, 25),
+      from = new Date(),
+      to = new Date(from.getFullYear(), from.getMonth(), from.getDay() + 7),
     } = props;
 
     this.onRangePickerInputClick = this.onRangePickerInputClick.bind(this);
@@ -27,7 +27,7 @@ export default class RangePicker {
     rootElement.innerHTML = this.createTemplate();
 
     this.element = rootElement.firstElementChild;
-    this.subElements = this.getSubElements(this.element);
+    this.subElements = this.getSubElements();
     this.createEventListeners();
   }
 
@@ -42,7 +42,7 @@ export default class RangePicker {
 
     if (!selector.innerHTML) {
       selector.innerHTML = this.createSelectorTemplate();
-      this.subElements = {...this.subElements, ...this.getSubElements(selector)};
+      this.subElements = this.getSubElements();
     }
 
     this.element.classList.add('rangepicker_open');
@@ -250,8 +250,8 @@ export default class RangePicker {
     return dayNumber === 0 ? 7 : dayNumber;
   }
 
-  getSubElements(rootElement) {
-    const elements = rootElement.querySelectorAll('[data-element]');
+  getSubElements() {
+    const elements = this.element.querySelectorAll('[data-element]');
     const result = {};
 
     elements.forEach(subElement => {
