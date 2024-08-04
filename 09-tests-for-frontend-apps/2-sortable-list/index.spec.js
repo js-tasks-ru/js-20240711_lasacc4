@@ -78,6 +78,23 @@ describe('tests-for-frontend-apps/sortable-list', () => {
     expect(sortableList.element.children.length).toBe(2);
   });
 
+  it('should have ability to update list items', () => {
+    const newData = new Array(5).fill(1).map(item => {
+      const element = document.createElement('li');
+
+      element.innerHTML = `
+          <span data-grab-handle>drag me!</span>
+          <span data-delete-handle>${item} delete me!</spa>
+        `;
+
+      return element;
+    });
+
+    sortableList.updateList(newData);
+
+    expect(sortableList.element.children.length).toBe(5);
+  });
+
   it('should have ability to be removed', () => {
     sortableList.remove();
 

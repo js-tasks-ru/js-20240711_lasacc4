@@ -14,6 +14,17 @@ export default class SortableList {
     this.render();
   }
 
+  updateList(items) {
+    this.items = items;
+    this.setSortableListClasses(this.element);
+
+    this.element.innerHTML = '';
+    this.element.append(...this.items);
+
+    // Не работает в тестах (возникает ошибка not a function)
+    // this.element.replaceChildren(...this.items);
+  }
+
   onDraggableMouseDown(e) {
     e.preventDefault();
 
@@ -23,7 +34,7 @@ export default class SortableList {
       return;
     }
 
-    const listItemElement = draggableElement.parentElement;
+    const listItemElement = draggableElement.closest('.sortable-list__item');
 
     this.createDynamicEventListeners();
     this.calculateCursorPositionShift(listItemElement, e.clientX, e.clientY);
@@ -32,6 +43,7 @@ export default class SortableList {
     listItemElement.after(this.placedHolderElement);
 
     this.draggedElement = listItemElement;
+    this.moveDraggedElement(e.clientX, e.clientY);
   }
 
   onDraggableMouseMove(e) {
@@ -61,10 +73,11 @@ export default class SortableList {
       return;
     }
 
-    const listItemElement = deleteHandler.parentElement;
+    const listItemElement = deleteHandler.closest('.sortable-list__item');
 
     this.items = this.items.filter(item => item !== listItemElement);
     listItemElement.remove();
+    this.element.dispatchEvent(new CustomEvent('item-deleted', { detail: deleteHandler }));
   }
 
   calculateCursorPositionShift(draggable, x, y) {
@@ -127,7 +140,9 @@ export default class SortableList {
   }
 
   setSortableListClasses(rootElement) {
-    rootElement.classList.add("sortable-list");
+    if (!rootElement.classList.contains("sortable-list")) {
+      rootElement.classList.add("sortable-list");
+    }
     this.items.forEach(item => item.classList.add('sortable-list__item'));
   }
 
@@ -136,15 +151,15 @@ export default class SortableList {
     this.element.addEventListener('pointerdown', this.onDeleteHandleClick);
   }
 
+  createDynamicEventListeners() {
+    document.addEventListener('pointermove', this.onDraggableMouseMove);
+    document.addEventListener('pointerup', this.onDraggableMouseUp);
+  }
+
   destroyEventListeners() {
     this.element.removeEventListener('pointerdown', this.onDraggableMouseDown);
     this.element.removeEventListener('pointerdown', this.onDeleteHandleClick);
     this.destroyDynamicEventListeners();
-  }
-
-  createDynamicEventListeners() {
-    document.addEventListener('pointermove', this.onDraggableMouseMove);
-    document.addEventListener('pointerup', this.onDraggableMouseUp);
   }
 
   destroyDynamicEventListeners() {
