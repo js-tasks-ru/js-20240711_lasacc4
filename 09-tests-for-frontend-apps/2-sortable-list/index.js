@@ -16,13 +16,7 @@ export default class SortableList {
 
   updateList(items) {
     this.items = items;
-    this.setSortableListClasses(this.element);
-
-    this.element.innerHTML = '';
-    this.element.append(...this.items);
-
-    // Не работает в тестах (возникает ошибка not a function)
-    // this.element.replaceChildren(...this.items);
+    this.element.innerHTML = this.createListItemsTemplate();
   }
 
   onDraggableMouseDown(e) {
@@ -125,11 +119,11 @@ export default class SortableList {
 
   render() {
     const rootElement = document.createElement("ul");
+    rootElement.classList.add("sortable-list");
 
-    this.setSortableListClasses(rootElement);
     this.createPlaceholderElement();
 
-    rootElement.append(...this.items);
+    rootElement.innerHTML = this.createListItemsTemplate();
     this.element = rootElement;
     this.createEventListeners();
   }
@@ -139,11 +133,16 @@ export default class SortableList {
     this.placedHolderElement.classList.add('sortable-list__placeholder');
   }
 
-  setSortableListClasses(rootElement) {
-    if (!rootElement.classList.contains("sortable-list")) {
-      rootElement.classList.add("sortable-list");
-    }
-    this.items.forEach(item => item.classList.add('sortable-list__item'));
+
+  createListItemsTemplate() {
+    const rootElement = document.createElement('div');
+
+    rootElement.append(...this.items.map(item => {
+      item.classList.add('sortable-list__item');
+      return item;
+    }));
+
+    return rootElement.innerHTML;
   }
 
   createEventListeners() {
