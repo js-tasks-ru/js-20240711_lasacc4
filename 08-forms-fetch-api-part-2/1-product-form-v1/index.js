@@ -75,7 +75,7 @@ export default class ProductForm {
       {url: link || '', source: e.target.files[0].name}
     ];
 
-    this.subElements['imageListContainer'].innerHTML = this.createImageListTemplate();
+    this.updateImageList();
   }
 
   onDeleteImageButtonClick(e) {
@@ -85,9 +85,17 @@ export default class ProductForm {
       return;
     }
 
+    this.removeImage(deleteButton);
+    this.updateImageList();
+  }
+
+  removeImage(deleteButton) {
     const imageSource = deleteButton.dataset.deleteHandle;
 
     this.images = this.images.filter((image) => image.source !== imageSource);
+  }
+
+  updateImageList() {
     this.subElements['imageListContainer'].innerHTML = this.createImageListTemplate();
   }
 
@@ -193,7 +201,7 @@ export default class ProductForm {
     productForm.addEventListener('submit', this.onFormSubmit);
     uploadButton.addEventListener('click', this.onUploadButtonClick);
     uploadInput.addEventListener('change', this.onUploadInputChange);
-    this.element.addEventListener('click', this.onDeleteImageButtonClick);
+    document.addEventListener('click', this.onDeleteImageButtonClick);
   }
 
   destroyEventListeners() {
@@ -201,7 +209,7 @@ export default class ProductForm {
     productForm.removeEventListener('submit', this.onFormSubmit);
     uploadButton.removeEventListener('click', this.onUploadButtonClick);
     uploadInput.removeEventListener('change', this.onUploadInputChange);
-    this.element.removeEventListener('click', this.onDeleteImageButtonClick);
+    document.removeEventListener('click', this.onDeleteImageButtonClick);
   }
 
   createTemplate() {
