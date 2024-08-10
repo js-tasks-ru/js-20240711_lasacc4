@@ -57,12 +57,8 @@ export default class Page {
     Object.values(this.components).forEach(async (component) => {
       const { from, to } = e.detail;
 
-      if (component instanceof ColumnChart) {
+      if (!(component instanceof RangePicker)) {
         await component.update(from, to);
-      }
-
-      if (component instanceof SortableTable) {
-        await component.updateItems(from, to);
       }
     });
   };

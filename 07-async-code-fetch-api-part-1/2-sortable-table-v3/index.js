@@ -33,13 +33,13 @@ export default class SortableTable extends SortableTableV2 {
   async render() {
     this.setUrlSearchParams(this.dateRange);
     this._data = await this.sortOnServer(this._sorted.id, this._sorted.order);
-    this.update(this._sorted.id, this._sorted.order);
+    super.update(this._sorted.id);
     this.initEventListeners();
   }
 
-  async updateItems(from, to) {
+  async update(from, to) {
     this._data = await this.fetchTableData({from, to});
-    this.update(this._sorted.id, this._sorted.order);
+    super.update(this._sorted.id);
   }
 
   async sort(field, order) {
@@ -53,7 +53,7 @@ export default class SortableTable extends SortableTableV2 {
 
     this._sortType = sortType;
     this._data = await this.getSortedData(field, sortOrder);
-    this.update(field, sortOrder);
+    super.update(field, sortOrder);
   }
 
   async getSortedData(field, order) {
@@ -101,7 +101,8 @@ export default class SortableTable extends SortableTableV2 {
       this._hasMoreData = xTotalCount >= rangeValue;
       this._data = [...this._data, ...body];
 
-      this.update(this._currentSortField);
+      super.update(this._currentSortField);
+      
       this.isInfiniteScrollLoading = false;
     }
   }
