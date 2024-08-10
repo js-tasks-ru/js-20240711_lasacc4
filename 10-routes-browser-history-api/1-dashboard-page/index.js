@@ -121,5 +121,6 @@ export default class Page {
   destroy() {
     this.destroyEventListeners();
     this.remove();
+    Object.values(this.components).forEach((component) => component.destroy());
   }
 }
