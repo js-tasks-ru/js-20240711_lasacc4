@@ -3,10 +3,6 @@ import SortableTable from "../../07-async-code-fetch-api-part-1/2-sortable-table
 import ColumnChart from "../../07-async-code-fetch-api-part-1/1-column-chart/index.js";
 import header from "./bestsellers-header.js";
 
-import fetchJson from "./utils/fetch-json.js";
-
-const BACKEND_URL = "https://course-js.javascript.ru";
-
 export default class Page {
   element;
   components;
@@ -51,7 +47,7 @@ export default class Page {
 
     this.element = rootElement.firstElementChild;
     this.subElements = this.getSubElements();
-    this.initComponentElements();
+    this.appendComponentElements();
     this.createEventListeners();
 
     return this.element;
@@ -66,7 +62,7 @@ export default class Page {
       }
 
       if (component instanceof SortableTable) {
-        await component.updateItems(e.detail);
+        await component.updateItems(from, to);
       }
     });
   };
@@ -112,7 +108,7 @@ export default class Page {
     }, {});
   }
 
-  initComponentElements() {
+  appendComponentElements() {
     Object.entries(this.components).forEach(([name, component]) => {
       this.subElements[name].append(component.element);
     });
